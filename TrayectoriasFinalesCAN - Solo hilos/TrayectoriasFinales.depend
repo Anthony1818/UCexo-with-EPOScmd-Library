@@ -1,0 +1,49 @@
+# depslib dependency file v1.0
+1539193245 source:/home/pi/Documents/codeblock Projects/TrayectoriasFinales/trayectoria.cpp
+	<iostream>
+	"Definitions.h"
+	<string.h>
+	<sstream>
+	<unistd.h>
+	<getopt.h>
+	<stdlib.h>
+	<stdio.h>
+	<list>
+	<math.h>
+	<sys/types.h>
+	<unistd.h>
+	<stdio.h>
+	<sys/times.h>
+	<sys/time.h>
+	<time.h>
+	<ctime>
+	<pthread.h>
+	<fstream>
+	<thread>
+
+1520131658 /home/pi/Documents/codeblock Projects/TrayectoriasFinales/Definitions.h
+
+1541241018 source:/home/pi/Documents/codeblock Projects/TrayectoriasFinalesCAN/trayectoria.cpp
+	<iostream>
+	"Definitions.h"
+	<string.h>
+	<sstream>
+	<unistd.h>
+	<getopt.h>
+	<stdlib.h>
+	<stdio.h>
+	<list>
+	<math.h>
+	<sys/types.h>
+	<unistd.h>
+	<stdio.h>
+	<sys/times.h>
+	<sys/time.h>
+	<time.h>
+	<ctime>
+	<pthread.h>
+	<fstream>
+	<thread>
+
+1540568460 /home/pi/Documents/codeblock Projects/TrayectoriasFinalesCAN/Definitions.h
+
