@@ -55,7 +55,7 @@ double CyclePercent[] = {0, 0.52, 0.87, 1};                      // Percent of h
 double CyclePercent2[] = {0, 0.18, 0.4, 0.69, 1};                // Percent of hike knee
 double CyclePercent3[] = {0, 0.08, 0.38, 0.67, 0.79, 0.92, 1};   // Percent of hike ankle
 
-int HikingTime = 10;        // Hiking Time
+int HikingTime = 4;        // Hiking Time
 
 
 // Initial condition for MCUV
@@ -157,7 +157,7 @@ int OpenDevice()
 	{
         VCS_SetEnableState(g_pKeyHandle, g_usNodeId, &p_pErrorCode);     // Enable EPOS4 Hip
         VCS_SetEnableState(g_pKeyHandle, g_usNodeId2, &p_pErrorCode);    // Enable EPOS4 Knee
-        //VCS_SetEnableState(g_pKeyHandle, g_usNodeId3, &p_pErrorCode);    // Enable EPOS4 Ankle
+        VCS_SetEnableState(g_pKeyHandle, g_usNodeId3, &p_pErrorCode);    // Enable EPOS4 Ankle
 	}
 	// Report the error
 	else{
@@ -176,60 +176,68 @@ void* Data(void* data){
 
 cout << "Capturando datos" << endl;
 
-ofstream fa1("ActualValueHip.txt");             // Created a txt file to save hip data
-ofstream fd1("DemandValueHip.txt");
-ofstream fc1("ActualCurrentHip.txt");
-ofstream fv1("ActualVelocityHip.txt");
+ofstream dataCadera("Datos Cadera.csv");
+ofstream dataRodilla("Datos Rodilla.csv");
+ofstream dataTobillo("Datos Tobillo.csv");
 
-ofstream fa2("ActualValueKnee.txt");             // Created a txt file to save hip data
-ofstream fd2("DemandValueKnee.txt");
-ofstream fc2("ActualCurrentKnee.txt");
-ofstream fv2("ActualVelocityKnee.txt");
+dataCadera << "Muestras" << ";" << "Senal referencia" << ";"  << "Senal exoesqueleto" << ";" << "Corriente" << ";" << "Velocidad" << endl;
+dataRodilla << "Muestras" << ";" << "Senal referencia" << ";" << "Senal exoesqueleto" << ";" << "Corriente" << ";" << "Velocidad" << endl;
+dataTobillo << "Muestras" << ";" << "Senal referencia" << ";" << "Senal exoesqueleto" << ";" << "Corriente" << ";" << "Velocidad" << endl;
+
 
 // Capturing hip data until finish one hiking
 while (banCaptura == 0)
 {
-    usleep(2000);
-    VCS_GetPositionIs(g_pKeyHandle, g_usNodeId, &pPositionIs, &p_pErrorCode);   // Get position of hip joint
-    VCS_GetObject(g_pKeyHandle, g_usNodeId, 0x6062, 0x00, &pDemandIs, 4, &pNbBytes, &p_pErrorCode); // Get refence of hip joint
+    usleep(20000);
+
+    //VCS_GetPositionIs(g_pKeyHandle, g_usNodeId, &pPositionIs, &p_pErrorCode);   // Get position of hip joint
+    //VCS_GetObject(g_pKeyHandle, g_usNodeId, 0x6062, 0x00, &pDemandIs, 4, &pNbBytes, &p_pErrorCode); // Get refence of hip joint
     VCS_GetCurrentIs(g_pKeyHandle, g_usNodeId, &pCurrentIs, & p_pErrorCode);
-    VCS_GetVelocityIs(g_pKeyHandle, g_usNodeId, &pVelocityIs, &p_pErrorCode);
+    //VCS_GetVelocityIs(g_pKeyHandle, g_usNodeId, &pVelocityIs, &p_pErrorCode);
+
+    //usleep(5000);
+
+    //VCS_GetPositionIs(g_pKeyHandle, g_usNodeId2, &pPositionIs2, &p_pErrorCode);   // Get position of hip joint
+    //VCS_GetObject(g_pKeyHandle, g_usNodeId2, 0x6062, 0x00, &pDemandIs2, 4, &pNbBytes, &p_pErrorCode); // Get refence of hip joint
+    //VCS_GetCurrentIs(g_pKeyHandle, g_usNodeId2, & pCurrentIs2, & p_pErrorCode);
+    //VCS_GetVelocityIs(g_pKeyHandle, g_usNodeId2, &pVelocityIs2, &p_pErrorCode);
+
+    //usleep(5000);
+
+    //VCS_GetPositionIs(g_pKeyHandle, g_usNodeId3, &pPositionIs3, &p_pErrorCode);   // Get position of hip joint
+    //VCS_GetObject(g_pKeyHandle, g_usNodeId3, 0x6062, 0x00, &pDemandIs3, 4, &pNbBytes, &p_pErrorCode); // Get refence of hip joint
+    //VCS_GetCurrentIs(g_pKeyHandle, g_usNodeId3, & pCurrentIs3, & p_pErrorCode);
+    //VCS_GetVelocityIs(g_pKeyHandle, g_usNodeId3, &pVelocityIs3, &p_pErrorCode);
+
+    dataCadera << contador << ";";
+    dataCadera << float(pPositionIs)/2230 << ";";              // Save position of hip in txt file
+    dataCadera << dec << float(pDemandIs)/2230 << ";";
+    dataCadera << abs(float(pCurrentIs)) << ";";
+    dataCadera << abs(float(pVelocityIs)) << endl;
 
 
+    dataRodilla << contador << ";";
+    dataRodilla << abs(float(pPositionIs2)/487) << ";";              // Save position of hip in txt file
+    dataRodilla << dec << abs(float(pDemandIs2)/487) << ";";
+    dataRodilla << abs(float(pCurrentIs2)) << ";";
+    dataRodilla << abs(float(pVelocityIs2)) << endl;
 
-    VCS_GetPositionIs(g_pKeyHandle, g_usNodeId2, &pPositionIs2, &p_pErrorCode);   // Get position of hip joint
-    VCS_GetObject(g_pKeyHandle, g_usNodeId2, 0x6062, 0x00, &pDemandIs2, 4, &pNbBytes, &p_pErrorCode); // Get refence of hip joint
-    VCS_GetCurrentIs(g_pKeyHandle, g_usNodeId2, & pCurrentIs2, & p_pErrorCode);
-    VCS_GetVelocityIs(g_pKeyHandle, g_usNodeId2, &pVelocityIs2, &p_pErrorCode);
-
-
-    fa1 << float(pPositionIs)/2230 << endl;              // Save position of hip in txt file
-    fd1 << dec << float(pDemandIs)/2230 << endl;
-    fc1 << abs(float(pCurrentIs)) << endl;
-    fv1 << abs(float(pVelocityIs)) << endl;
-
-
-
-    fa2 << abs(float(pPositionIs2)/487) << endl;              // Save position of hip in txt file
-    fd2 << dec << abs(float(pDemandIs2)/487) << endl;
-    fc2 << abs(float(pCurrentIs2)) << endl;
-    fv2 << abs(float(pVelocityIs2)) << endl;
+    dataTobillo << contador << ";";
+    dataTobillo << -1*(float(pPositionIs3)/487) << ";";              // Save position of hip in txt file
+    dataTobillo << dec << -1*(float(pDemandIs3)/487) << ";";
+    dataTobillo << abs(float(pCurrentIs3)) << ";";
+    dataTobillo << abs(float(pVelocityIs3)) << endl;
 
     contador = contador + 1;
 }
 
-fa1.close();
-fd1.close();
-fc1.close();
-fv1.close();
+dataCadera.close();
+dataRodilla.close();
+dataRodilla.close();
 
-fa2.close();
-fd2.close();
-fc2.close();
-fv2.close();
-                              // Close txt file
-cout << "muestras 1: " << contador << endl;     // print the number of samples
-contador = -1;
+
+cout << "numero de muestras: " << contador << endl;     // print the number of samples
+contador = 0;
 
 }
 
@@ -256,16 +264,7 @@ for (int x = 1; x <= 3; x++){
     }
 
 
-    cout << "PASO Cadera" << endl;
     usleep((HikingTime * (CyclePercent[x] - CyclePercent[x - 1]))*1000000); // wait until finish each stage
-
-    /*
-    auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::milli> elapsed = end-start;
-    std::cout << "Waited " << elapsed.count() << " ms\n";
-    */
-
-    //cout << (HikingTime * (CyclePercent[x] - CyclePercent[x - 1]))*1000000 << endl;
 }
 
 banCaptura = 1;  // Indicate that the capture of information must finish
@@ -292,12 +291,11 @@ for (int x = 1; x <= 4; x++){
         break;
     }
 
-    cout << "PASO Rodilla" << endl;
     usleep((HikingTime * (CyclePercent2[x] - CyclePercent2[x - 1]))*1000000);
 
 }
 
-//banRodilla = 1;     // Indicate that the capture of information must finish
+banCaptura = 1;  // Indicate that the capture of information must finish
 return NULL;
 }
 
@@ -321,9 +319,7 @@ for (int x = 1; x <= 6; x++){
         LogError("VCS_MoveToPosition - Ankle", p_pErrorCode);       // Report the error
         break;
     }
-    cout << "PASO" << endl;
     usleep((HikingTime * (CyclePercent3[x] - CyclePercent3[x - 1]))*1000000);
-    cout << (HikingTime * (CyclePercent3[x] - CyclePercent3[x - 1]))*1000000 << endl;
 
 }
 
@@ -371,8 +367,6 @@ int main()
             ProfileVelocity[i-1] = rint(abs(Vf*0.0145));                    // Save the velocity of each section in rpm
             ProfileAcceleration[i-1] = rint(2*ProfileVelocity[i-1]/Tf);
             ProfileDeceleration[i-1] = rint(2*ProfileVelocity[i-1]/Tf);
-            cout << ProfileVelocity[i-1] << endl;                           // Show velocities
-            cout << ProfileAcceleration[i-1] << endl;
             }
 
 	// Calculation of speeds and accelerations of knee trajectory
@@ -403,16 +397,15 @@ int main()
 
     // Initial position Hip
     VCS_ActivateProfilePositionMode(g_pKeyHandle, g_usNodeId,  &p_pErrorCode);          // Activate the EPOS4 of the Hip with Profile Position Mode
-	VCS_SetPositionProfile(g_pKeyHandle, g_usNodeId, 1000, 1000, 1000, &p_pErrorCode);  // Set the parameters to move the Hip to the initial position
+	VCS_SetPositionProfile(g_pKeyHandle, g_usNodeId, 500, 1000, 1000, &p_pErrorCode);  // Set the parameters to move the Hip to the initial position
 	if (VCS_MoveToPosition(g_pKeyHandle, g_usNodeId, TargetPosition[0], Absolute, Immediately, &p_pErrorCode) == 0) // Move the Hip to initial position. If EPOS4 does not work, it will report an error
 	{
         LogError("VCS_MoveToPosition - Hip", p_pErrorCode);
 	}
 
-
     // Initial position Knee
     VCS_ActivateProfilePositionMode(g_pKeyHandle, g_usNodeId2,  &p_pErrorCode);         // Activate the EPOS4 of the Knee with Profile Position Mode
-	VCS_SetPositionProfile(g_pKeyHandle, g_usNodeId2, 1000, 1000, 1000, &p_pErrorCode); // Set the parameters to move the Knee to the initial position
+	VCS_SetPositionProfile(g_pKeyHandle, g_usNodeId2, 500, 1000, 1000, &p_pErrorCode); // Set the parameters to move the Knee to the initial position
 	if (VCS_MoveToPosition(g_pKeyHandle, g_usNodeId2, TargetPosition2[0], Absolute, Immediately, &p_pErrorCode) == 0) // Move the Knee to initial position. If EPOS4 does not work, it will report an error
     {
 
@@ -420,12 +413,12 @@ int main()
 	}
 
 	// Initial position Ankle
-	//VCS_ActivateProfilePositionMode(g_pKeyHandle, g_usNodeId3,  &p_pErrorCode);           // Activate the EPOS4 of the Ankle with Profile Position Mode
-	//VCS_SetPositionProfile(g_pKeyHandle, g_usNodeId3, 1000, 1000, 1000, &p_pErrorCode);   // Set the parameters to move the Knee to the initial position
-	//if (VCS_MoveToPosition(g_pKeyHandle, g_usNodeId3, TargetPosition3[0], Absolute, Immediately, &p_pErrorCode) == 0) // Move the Knee to initial position. If EPOS4 does not work, it will report an error
-	//{
-        //LogError("VCS_MoveToPosition - Ankle", p_pErrorCode);
-	//}
+	VCS_ActivateProfilePositionMode(g_pKeyHandle, g_usNodeId3,  &p_pErrorCode);           // Activate the EPOS4 of the Ankle with Profile Position Mode
+	VCS_SetPositionProfile(g_pKeyHandle, g_usNodeId3, 500, 1000, 1000, &p_pErrorCode);   // Set the parameters to move the Knee to the initial position
+	if (VCS_MoveToPosition(g_pKeyHandle, g_usNodeId3, TargetPosition3[0], Absolute, Immediately, &p_pErrorCode) == 0) // Move the Knee to initial position. If EPOS4 does not work, it will report an error
+	{
+        LogError("VCS_MoveToPosition - Ankle", p_pErrorCode);
+	}
 
 
 	usleep(5000000);    // Give five seconds for the joints to stabilize
@@ -448,18 +441,18 @@ int main()
         // Create three threads to run each joint according the before calculations
         pthread_create(&thread1, NULL, Cadera, NULL);
         pthread_create(&thread2, NULL, Rodilla, NULL);
-        //pthread_create(&thread3, NULL, Tobillo, NULL);
+        pthread_create(&thread3, NULL, Tobillo, NULL);
 
         // Create three threads to capture the important information about the exoskeleton when it is working
-        //pthread_create(&thread4, NULL, Data, NULL);
+        pthread_create(&thread4, NULL, Data, NULL);
 
 
         // Run all the threads
         pthread_join(thread1, NULL);    // Thread that moves the Hip joint
         pthread_join(thread2, NULL);    // Thread that moves the Knee joint
-        //pthread_join(thread3, NULL);  // Thread that moves the Ankle joint
+        pthread_join(thread3, NULL);  // Thread that moves the Ankle joint
 
-        //pthread_join(thread4, NULL);    // Thread that captures information of Hip
+        pthread_join(thread4, NULL);    // Thread that captures information of Hip
 
 
     }
@@ -467,14 +460,14 @@ int main()
     // When the program ends, all joints return to the original position (0 degrees in each joint)
     VCS_MoveToPosition(g_pKeyHandle, g_usNodeId, 0, Absolute, Immediately, &p_pErrorCode);
     VCS_MoveToPosition(g_pKeyHandle, g_usNodeId2, 0, Absolute, Immediately, &p_pErrorCode);
-    //VCS_MoveToPosition(g_pKeyHandle, g_usNodeId3, 0, Absolute, Immediately, &p_pErrorCode);
+    VCS_MoveToPosition(g_pKeyHandle, g_usNodeId3, 0, Absolute, Immediately, &p_pErrorCode);
     usleep(5000000);
 
 
     // Disable all EPOS4 and the program ends
 	VCS_SetDisableState(g_pKeyHandle, g_usNodeId, &p_pErrorCode);		//disable driver
 	VCS_SetDisableState(g_pKeyHandle, g_usNodeId2, &p_pErrorCode);		//disable driver
-    //VCS_SetDisableState(g_pKeyHandle, g_usNodeId3, &p_pErrorCode);		//disable driver
+    VCS_SetDisableState(g_pKeyHandle, g_usNodeId3, &p_pErrorCode);		//disable driver
 
 
 	cout << "Se termino \n";
